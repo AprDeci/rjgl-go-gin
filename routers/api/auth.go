@@ -31,3 +31,11 @@ func GetAuth(ctx *gin.Context) {
 	})
 
 }
+
+func CreateAccount(c *gin.Context) {
+	var auth auth
+	if err := c.ShouldBindJSON(&auth); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+}

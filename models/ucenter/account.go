@@ -24,6 +24,13 @@ func CheckAuth(username, password string) bool {
 	return account.ID > 0
 }
 
-func CreateAccount(account *Account) error {
-	return models.DB.Create(account).Error
+func CreateAccount(data map[string]interface{}) bool {
+	models.DB.Create(&Account{
+		Name:     data["name"].(string),
+		Password: data["password"].(string),
+		Status:   1,
+		RoleID:   1,
+		ShowName: data["show_name"].(string),
+	})
+	return true
 }
