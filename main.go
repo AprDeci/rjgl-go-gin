@@ -10,15 +10,17 @@ import (
 	"time"
 
 	"github.com/aprdec/rjgl/pkg/setting"
-	"github.com/gin-gonic/gin"
+	"github.com/aprdec/rjgl/routers"
 )
 
 func main() {
+	r := routers.InitRouter()
+
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", setting.HTTPPort),
 		ReadTimeout:  setting.ReadTimeout,
 		WriteTimeout: setting.WriteTimeout,
-		Handler:      gin.Default(),
+		Handler:      r,
 	}
 
 	go func() {

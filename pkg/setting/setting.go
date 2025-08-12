@@ -15,7 +15,7 @@ var (
 	WriteTimeout time.Duration
 )
 
-func LoadSetting() {
+func init() {
 	var err error
 	Cfg, err = ini.Load("conf/app.ini")
 	if err != nil {

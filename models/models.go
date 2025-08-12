@@ -17,10 +17,7 @@ func init() {
 		dbName, user, password, host string
 	)
 
-	sec, err := setting.Cfg.GetSection("database")
-	if err != nil {
-		log.Fatalf("获取数据库配置失败: %v", err)
-	}
+	sec := setting.Cfg.Section("database")
 
 	dbName = sec.Key("database").MustString("rjgl")
 	user = sec.Key("username").MustString("root")
