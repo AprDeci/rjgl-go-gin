@@ -23,3 +23,7 @@ func CheckAuth(username, password string) bool {
 	models.DB.Select("id,role_id,name").Where("name = ? and password = ?", username, password).First(&account)
 	return account.ID > 0
 }
+
+func CreateAccount(account *Account) error {
+	return models.DB.Create(account).Error
+}

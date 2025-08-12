@@ -36,6 +36,5 @@ func init() {
 	}
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
-	log.Print("1233213")
 
 }
