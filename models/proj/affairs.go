@@ -15,6 +15,7 @@ type ApprovalNode struct {
 	Name        string
 	Desc        string `gorm:"column:description"`
 	Role        string //审批角色 admin superadmin user
+	UserID      []int
 	ApproveType string //OR/AND 多人审批类型
 	Required    string
 }
