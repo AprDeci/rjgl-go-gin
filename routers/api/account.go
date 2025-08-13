@@ -80,7 +80,7 @@ func GetAccountList(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /account/delete [get]
+// @Router /account/delete [delete]
 func DeleteAccount(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
@@ -111,7 +111,7 @@ func DeleteAccount(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /account/update [post]
+// @Router /account/update [put]
 func UpdateAccount(c *gin.Context) {
 	var req dto.UpdateAccountReq
 	if err := c.ShouldBind(&req); err != nil {

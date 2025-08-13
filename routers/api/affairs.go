@@ -81,5 +81,44 @@ func GetApprovalTemplateList(c *gin.Context) {
 		"msg":  "获取成功",
 		"data": list,
 	})
+}
+
+// @Summary 删除审批模板
+// @Description 删除审批模板
+// @Tags affairs
+// @Accept json
+// @Produce json
+// @Param id query int true "id"
+// @Success 200 {object} gin.H{code=int,msg=string}
+// @Router /affair/delete [delete]
+func DeleteApprovalTemplate(c *gin.Context) {
+	var req dto.CommonReq
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": -1,
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	ok, err := service.DeleteApprovalTemplate(req.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": -1,
+			"msg":  err.Error(),
+		})
+		return
+	}
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": -1,
+			"msg":  "删除失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg":  "删除成功",
+	})
 
 }

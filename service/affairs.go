@@ -37,3 +37,18 @@ func GetApprovalTemplateList(req *dto.GetApprovalTemplateListReq) ([]*proj.Appro
 	return list, nil
 
 }
+
+func DeleteApprovalTemplate(id uint) (bool, error) {
+
+	if err := models.DB.Delete(&proj.ApprovalTemplate{}, id).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func UpdateApprovalTemplate(template *proj.ApprovalTemplate) (bool, error) {
+	if err := models.DB.Save(template).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}

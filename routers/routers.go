@@ -16,14 +16,15 @@ func InitRouter() *gin.Engine {
 	{
 		accountGroup.POST("/create", api.CreateAccount)
 		accountGroup.GET("/list", api.GetAccountList)
-		accountGroup.GET("/delete", api.DeleteAccount)
-		accountGroup.POST("/update", api.UpdateAccount)
+		accountGroup.DELETE("/delete", api.DeleteAccount)
+		accountGroup.PUT("/update", api.UpdateAccount)
 
 	}
 	affairGroup := r.Group("/affair")
 	{
 		affairGroup.POST("/create", api.CreateApprovalTemplate)
 		affairGroup.GET("/list", api.GetApprovalTemplateList)
+		affairGroup.DELETE("/delete", api.DeleteApprovalTemplate)
 
 	}
 
