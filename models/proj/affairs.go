@@ -15,9 +15,9 @@ type ApprovalNode struct {
 	Name        string
 	Desc        string `gorm:"column:description"`
 	Role        string //审批角色 admin superadmin user
-	UserID      []int  `gorm:"column:user_ids;type:json"`
+	UserID      string `gorm:"column:user_ids;type:json" json:"user_ids"`
 	ApproveType string //OR/AND 多人审批类型
-	Required    string
+	Required    bool
 }
 
 // 审批模板
