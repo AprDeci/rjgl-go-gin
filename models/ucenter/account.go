@@ -47,7 +47,26 @@ func GetAccountByUsername(username string) (*Account, error) {
 	return &account, nil
 }
 
-// func GetAccountList(page, pageSize int, req *Account) ([]*Account, error) {
-// 	var accounts []*Account
-
-// }
+func GetAccountList(page, pageSize int, req *dto.GetAccountListReq) ([]*Account, error) {
+	var accounts []*Account
+	query := models.DB.Model(&accounts)
+	if req.ID > 0 {
+		query = query.Where("id=?", req.ID)
+	}
+	if req.Name != "" {
+		query = query.Where("name like ?", "%"+req.Name+"%")
+	}
+	if req.Status > 0 {
+		query = query.Where("status=?", req.Status)
+	}
+	if req.RoleID > 0 {
+		query = query.Where("role_id=?", req.RoleID)
+	}
+	query = query.Order("id desc")
+	query = query.Limit(pageSize)
+	query = query.Offset((page - 1) * pageSize)
+	if err := query.Find(&accounts).Error; err != nil {
+		return nil, err
+	}
+	return accounts, nil
+}

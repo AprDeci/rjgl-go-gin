@@ -1,17 +1,22 @@
 package dto
 
-// CreateAccountReq 创建账号请求参数
+import "gorm.io/gorm"
+
+type Account struct {
+	gorm.Model
+	Name     string
+	Password string
+	Status   int
+	RoleID   int `gorm:"column:role_id"`
+	ShowName string
+}
+
 type CreateAccountReq struct {
-	// 用户名
 	Username string `json:"username" binding:"required,min=2,max=30"`
-	// 密码
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-// CreateAccountResp 创建账号响应
-type CreateAccountResp struct {
-	// 状态码
-	Code int `json:"code"`
-	// 消息
-	Message string `json:"message"`
+type GetAccountListReq struct {
+	pagination
+	Account
 }

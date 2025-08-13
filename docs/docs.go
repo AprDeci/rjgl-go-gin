@@ -14,7 +14,77 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/account/create": {
+            "post": {
+                "description": "create account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "创建账号",
+                "parameters": [
+                    {
+                        "description": "account",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAccountReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAccountResp"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateAccountReq": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "minLength": 6
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 2
+                }
+            }
+        },
+        "dto.CreateAccountResp": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "状态码",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "消息",
+                    "type": "string"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

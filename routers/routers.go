@@ -15,6 +15,7 @@ func InitRouter() *gin.Engine {
 	accountGroup := r.Group("/account")
 	{
 		accountGroup.POST("/create", api.CreateAccount)
+		accountGroup.GET("/list", api.GetAccountList)
 	}
 
 	{

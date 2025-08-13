@@ -15,8 +15,8 @@ import (
 // @Param account body dto.CreateAccountReq true "account"
 // @Accept json
 // @Produce json
-// @Success 200 {object} dto.CreateAccountResp
-// @Router /account/create [post]
+// @Success 200
+// @Router /account [post]
 func CreateAccount(c *gin.Context) {
 	var req dto.CreateAccountReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -35,5 +35,36 @@ func CreateAccount(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    0,
 		"message": "创建成功",
+	})
+}
+
+// @Summary 获取账号列表
+// @Schemes
+// @Description get account list
+// @Tags account
+// @Param page query int false "page"
+// @Param pageSize query int false "pageSize"
+// @Param name query string false "name"
+// @Param status query int false "status"
+// @Param roleID query int false "roleID"
+// @Accept json
+// @Produce json
+// @Success 200 {object} dto.GetAccountListResp
+// @Router /account [get]
+func GetAccountList(c *gin.Context) {
+	var req dto.GetAccountListReq
+	if err := c.ShouldBindQuery(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	accounts, err := ucenter.GetAccountList(req.Page, req.PageSize, &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    0,
+		"message": "获取成功",
+		"data":    accounts,
 	})
 }
