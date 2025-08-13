@@ -23,6 +23,8 @@ func InitRouter() *gin.Engine {
 	affairGroup := r.Group("/affair")
 	{
 		affairGroup.POST("/create", api.CreateApprovalTemplate)
+		affairGroup.GET("/list", api.GetApprovalTemplateList)
+
 	}
 
 	return r
