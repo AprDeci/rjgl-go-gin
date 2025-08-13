@@ -15,6 +15,12 @@ func CreateApprovalTemplate(template *proj.ApprovalTemplate) (bool, error) {
 
 func GetApprovalTemplateList(req *dto.GetApprovalTemplateListReq) ([]*proj.ApprovalTemplate, error) {
 	var list []*proj.ApprovalTemplate
+	if req.Page <= 0 {
+		req.Page = 1
+	}
+	if req.PageSize <= 0 {
+		req.PageSize = 10
+	}
 	query := models.DB
 	if req.Name != "" {
 		query = query.Where("name like ?", "%"+req.Name+"%")
