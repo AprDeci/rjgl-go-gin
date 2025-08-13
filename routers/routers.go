@@ -20,9 +20,9 @@ func InitRouter() *gin.Engine {
 		accountGroup.POST("/update", api.UpdateAccount)
 
 	}
-
+	affairGroup := r.Group("/affair")
 	{
-
+		affairGroup.POST("/create", api.CreateApprovalTemplate)
 	}
 
 	return r
