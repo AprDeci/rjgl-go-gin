@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/aprdec/rjgl/models/ucenter"
@@ -16,7 +17,7 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200
-// @Router /account [post]
+// @Router /account/create [post]
 func CreateAccount(c *gin.Context) {
 	var req dto.CreateAccountReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -49,14 +50,16 @@ func CreateAccount(c *gin.Context) {
 // @Param roleID query int false "roleID"
 // @Accept json
 // @Produce json
-// @Success 200 {object} dto.GetAccountListResp
-// @Router /account [get]
+// @Success 200
+// @Router /account/list [get]
 func GetAccountList(c *gin.Context) {
 	var req dto.GetAccountListReq
 	if err := c.ShouldBindQuery(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	log.Printf("req: %v", req)
+
 	accounts, err := ucenter.GetAccountList(req.Page, req.PageSize, &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -67,4 +70,71 @@ func GetAccountList(c *gin.Context) {
 		"message": "获取成功",
 		"data":    accounts,
 	})
+}
+
+// @Summary 删除账号
+// @Schemes
+// @Description delete account
+// @Tags account
+// @Param id query string true "id"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /account/delete [get]
+func DeleteAccount(c *gin.Context) {
+	id := c.Query("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": "id is required"})
+		return
+	}
+	ok, err := ucenter.DeleteAccount(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": err.Error()})
+		return
+	}
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": "删除失败"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    0,
+		"message": "删除成功",
+	})
+
+}
+
+// @Summary 更新账号
+// @Schemes
+// @Description update account
+// @Tags account
+// @Param account body dto.UpdateAccountReq true "account"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /account/update [post]
+func UpdateAccount(c *gin.Context) {
+	var req dto.UpdateAccountReq
+	if err := c.ShouldBind(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": err.Error()})
+		return
+
+	}
+	if req.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": "id is required"})
+		return
+	}
+	ok, err := ucenter.UpdateAccount(&req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": err.Error()})
+		return
+	}
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 1, "msg": "更新失败"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    0,
+		"message": "更新成功",
+	})
+
 }

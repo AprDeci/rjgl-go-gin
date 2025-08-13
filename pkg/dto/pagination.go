@@ -1,6 +1,6 @@
 package dto
 
-type pagination struct {
-	Page     int `json:"page"`
-	PageSize int `json:"pageSize"`
+type Pagination struct {
+	Page     int `form:"page" json:"page"`
+	PageSize int `form:"pageSize" json:"pageSize"`
 }

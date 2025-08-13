@@ -1,14 +1,17 @@
 package dto
 
-import "gorm.io/gorm"
-
 type Account struct {
-	gorm.Model
-	Name     string
-	Password string
-	Status   int
-	RoleID   int `gorm:"column:role_id"`
-	ShowName string
+	ID       int    `gorm:"primaryKey" form:"id" json:"id"`
+	Name     string `form:"name" json:"name"`
+	Password string `form:"password" json:"password"`
+	Status   int    `form:"status" json:"status"`
+	RoleID   int    `gorm:"column:role_id" form:"role_id" json:"role_id"`
+	ShowName string `form:"show_name" json:"show_name"`
+}
+
+type Auth struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type CreateAccountReq struct {
@@ -17,6 +20,10 @@ type CreateAccountReq struct {
 }
 
 type GetAccountListReq struct {
-	pagination
+	Pagination
+	Account
+}
+
+type UpdateAccountReq struct {
 	Account
 }

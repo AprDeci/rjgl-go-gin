@@ -4,20 +4,32 @@ import (
 	"net/http"
 
 	"github.com/aprdec/rjgl/models/ucenter"
+	"github.com/aprdec/rjgl/pkg/dto"
 	"github.com/gin-gonic/gin"
 )
 
-type auth struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	ShowName string `json:"show_name" binding:"required"`
-}
-
+// @Summary 登录
+// @Schemes
+// @Description login
+// @Tags auth
+// @Param req body dto.Auth true "req"
+// @Accept json
+// @Produce json
+// @Success 200
+// @Router /auth [post]
 func GetAuth(ctx *gin.Context) {
-	username := ctx.PostForm("username")
-	password := ctx.PostForm("password")
+	var req dto.Auth
+
+	if err := ctx.ShouldBind(&req); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    1,
+			"message": err.Error(),
+		})
+		return
+	}
+
 	// 校验
-	isExist := ucenter.CheckAuth(username, password)
+	isExist := ucenter.CheckAuth(req)
 
 	var (
 		code    int

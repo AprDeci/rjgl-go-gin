@@ -1,6 +1,10 @@
 package ucenter
 
 import (
+	"errors"
+	"log"
+	"strconv"
+
 	"github.com/aprdec/rjgl/models"
 	"github.com/aprdec/rjgl/pkg/dto"
 	"gorm.io/gorm"
@@ -19,10 +23,14 @@ func (a *Account) TableName() string {
 	return "ucenter_account"
 }
 
-func CheckAuth(username, password string) bool {
+func CheckAuth(req dto.Auth) bool {
 	var account Account
-	models.DB.Select("id,role_id,name").Where("name = ? and password = ?", username, password).First(&account)
-	return account.ID > 0
+	log.Printf("username: %s, password: %s", req.Username, req.Password)
+	models.DB.Select("id,role_id,name").Where("name = ? and password = ?", req.Username, req.Password).First(&account)
+	if account.ID > 0 {
+		return true
+	}
+	return false
 }
 
 func CreateAccount(req *dto.CreateAccountReq) (bool, error) {
@@ -35,15 +43,22 @@ func CreateAccount(req *dto.CreateAccountReq) (bool, error) {
 	return true, nil
 }
 
-func GetAccount(id uint) (*Account, error) {
+func GetAccount(id string) (*Account, error) {
 	var account Account
-	models.DB.Where("id=?", id).First(&account)
+	if err := models.DB.Where("id=?", id).First(&account).Error; err != nil {
+		return nil, err
+	}
 	return &account, nil
 }
 
 func GetAccountByUsername(username string) (*Account, error) {
 	var account Account
-	models.DB.Where("name=?", username).First(&account)
+	if err := models.DB.Where("name=?", username).First(&account).Error; err != nil {
+		return nil, err
+	}
+	if account.ID <= 0 {
+		return nil, errors.New("account not found")
+	}
 	return &account, nil
 }
 
@@ -69,4 +84,44 @@ func GetAccountList(page, pageSize int, req *dto.GetAccountListReq) ([]*Account,
 		return nil, err
 	}
 	return accounts, nil
+}
+
+func DeleteAccount(id string) (bool, error) {
+	account, err := GetAccount(id)
+	if err != nil {
+		return false, err
+	}
+	if account.ID <= 0 {
+		return false, errors.New("account not found")
+	}
+	if err := models.DB.Delete(&account).Error; err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func UpdateAccount(req *dto.UpdateAccountReq) (bool, error) {
+	account, err := GetAccount(strconv.Itoa(req.ID))
+	if err != nil {
+		return false, err
+	}
+	if req.Name != "" {
+		account.Name = req.Name
+	}
+	if req.Password != "" {
+		account.Password = req.Password
+	}
+	if req.Status > 0 {
+		account.Status = req.Status
+	}
+	if req.RoleID > 0 {
+		account.RoleID = req.RoleID
+	}
+	if req.ShowName != "" {
+		account.ShowName = req.ShowName
+	}
+	if err := models.DB.Save(&account).Error; err != nil {
+		return false, err
+	}
+	return true, nil
 }
