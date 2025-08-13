@@ -42,3 +42,15 @@ type ApprovalInstance struct {
 	ApprovedAt  *time.Time
 	RejectedAt  *time.Time
 }
+
+func (a *ApprovalNode) TableName() string {
+	return "proj_approval_node"
+}
+
+func (a *ApprovalTemplate) TableName() string {
+	return "proj_approval_template"
+}
+
+func (a *ApprovalInstance) TableName() string {
+	return "proj_approval_instance"
+}
