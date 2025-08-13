@@ -2,6 +2,7 @@ package ucenter
 
 import (
 	"github.com/aprdec/rjgl/models"
+	"github.com/aprdec/rjgl/pkg/dto"
 	"gorm.io/gorm"
 )
 
@@ -24,13 +25,29 @@ func CheckAuth(username, password string) bool {
 	return account.ID > 0
 }
 
-func CreateAccount(data map[string]interface{}) bool {
+func CreateAccount(req *dto.CreateAccountReq) (bool, error) {
 	models.DB.Create(&Account{
-		Name:     data["name"].(string),
-		Password: data["password"].(string),
+		Name:     req.Username,
+		Password: req.Password,
 		Status:   1,
 		RoleID:   1,
-		ShowName: data["show_name"].(string),
 	})
-	return true
+	return true, nil
 }
+
+func GetAccount(id uint) (*Account, error) {
+	var account Account
+	models.DB.Where("id=?", id).First(&account)
+	return &account, nil
+}
+
+func GetAccountByUsername(username string) (*Account, error) {
+	var account Account
+	models.DB.Where("name=?", username).First(&account)
+	return &account, nil
+}
+
+// func GetAccountList(page, pageSize int, req *Account) ([]*Account, error) {
+// 	var accounts []*Account
+
+// }

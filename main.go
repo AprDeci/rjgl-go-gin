@@ -9,12 +9,26 @@ import (
 	"os/signal"
 	"time"
 
+	docs "github.com/aprdec/rjgl/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/aprdec/rjgl/pkg/setting"
 	"github.com/aprdec/rjgl/routers"
 )
 
 func main() {
+	//docs
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Title = "RJGL API"
+	docs.SwaggerInfo.Description = "RJGL API"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8080"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
 	r := routers.InitRouter()
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", setting.HTTPPort),

@@ -9,7 +9,8 @@ import (
 
 type auth struct {
 	Username string `json:"username" binding:"required"`
-	Password string `json:"password"`
+	Password string `json:"password" binding:"required"`
+	ShowName string `json:"show_name" binding:"required"`
 }
 
 func GetAuth(ctx *gin.Context) {
@@ -23,19 +24,15 @@ func GetAuth(ctx *gin.Context) {
 		message string
 	)
 	if isExist {
-
+		code = 0
+		message = "登录成功"
+	} else {
+		code = 1
+		message = "登录失败"
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"message": message,
 	})
 
-}
-
-func CreateAccount(c *gin.Context) {
-	var auth auth
-	if err := c.ShouldBindJSON(&auth); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 }

@@ -12,6 +12,10 @@ func InitRouter() *gin.Engine {
 	gin.SetMode(setting.RunMode)
 
 	r.POST("/auth", api.GetAuth)
+	accountGroup := r.Group("/account")
+	{
+		accountGroup.POST("/create", api.CreateAccount)
+	}
 
 	{
 
